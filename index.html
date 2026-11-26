@@ -37,6 +37,7 @@ button,input,textarea{font-family:inherit}
 .tab-ico[data-ico=play]{clip-path:polygon(20% 8%,20% 92%,88% 50%)}
 .tab-ico[data-ico=book]{clip-path:polygon(0 12%,42% 6%,50% 12%,58% 6%,100% 12%,100% 94%,58% 88%,50% 94%,42% 88%,0 94%)}
 .tab-ico[data-ico=grid]{width:8px;height:8px;margin:6px 0 0 6px;background:currentColor;clip-path:none;box-shadow:12px 0 0 currentColor,0 12px 0 currentColor,12px 12px 0 currentColor}
+.tab-ico[data-ico=video]{clip-path:polygon(0 15%,72% 15%,72% 2%,100% 22%,100% 78%,72% 98%,72% 85%,0 85%,0 15%)}
 
 .section-title{font-size:13px;color:var(--muted);margin:18px 2px 9px;display:flex;justify-content:space-between;align-items:center}
 .pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
@@ -102,6 +103,22 @@ button,input,textarea{font-family:inherit}
 .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(12px);background:rgba(61,43,36,.92);color:#fff;padding:9px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:60;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;padding:36px 16px;color:var(--muted);font-size:13px;line-height:1.8}
+
+.vid-group{margin-bottom:18px}
+.vid-group-head{font-size:14px;font-weight:600;margin:4px 2px 5px}
+.vid-group-note{font-size:12px;color:var(--muted);line-height:1.6;margin:0 2px 10px}
+.vid-card{display:block;text-decoration:none;color:inherit;padding:0;overflow:hidden;margin-bottom:10px}
+.vid-thumb{height:96px;position:relative;display:flex;align-items:center;justify-content:center}
+.vid-thumb.blue{background:#DCEAF4}.vid-thumb.amber{background:#F7E6CB}.vid-thumb.green{background:#DFEEDD}.vid-thumb.purple{background:#E7E1F4}
+.vid-play{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center}
+.vid-play:after{content:"";width:0;height:0;border-left:15px solid var(--accent);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:3px}
+.vid-time{position:absolute;right:9px;bottom:8px;background:rgba(61,43,36,.72);color:#fff;font-size:11px;padding:2px 7px;border-radius:6px}
+.vid-info{padding:11px 13px 12px}
+.vid-title{font-size:14px;font-weight:600;margin:0 0 5px}
+.vid-tag{font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 7px;margin-left:7px;font-weight:500;white-space:nowrap}
+.vid-why{font-size:12px;color:#6B574B;line-height:1.6;margin:0}
+.vid-open{font-size:12px;color:var(--accent);margin-top:8px;display:inline-block;font-weight:600}
+.vid-note{background:#FFF6E9;border:1px solid var(--gold);border-radius:12px;padding:10px 13px;font-size:12px;color:#7A5E3A;line-height:1.6;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -121,6 +138,7 @@ button,input,textarea{font-family:inherit}
     <button class="tab" data-tab="stage" type="button"><span class="tab-ico" data-ico="play"></span>剧场</button>
     <button class="tab" data-tab="script" type="button"><span class="tab-ico" data-ico="book"></span>剧本</button>
     <button class="tab" data-tab="library" type="button"><span class="tab-ico" data-ico="grid"></span>剧集</button>
+    <button class="tab" data-tab="videos" type="button"><span class="tab-ico" data-ico="video"></span>视频</button>
   </nav>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -156,6 +174,24 @@ window.CARTOON_DATA = {
         { label:'金句收尾', art:'celebrate', boy:'happy', bear:'cheer', who:'勇气熊', text:'会吃一口，就是长大一点点。', note:'同一收尾句式，和上一集互相呼应。', duration:6000 }
       ],
       takeaway: '会吃一口，就是长大一点点。'
+    }
+  ],
+  videos: [
+    {
+      group: '害羞 · 不敢表达',
+      note: '别人家的好动画，看完可以跟孩子聊聊「他当时怕什么」。',
+      items: [
+        { title: '洞穴', time: '6 分钟', tag: '皮克斯 · 奥斯卡提名', why: '社恐小兔子只想自己待着，被热情邻居打扰到崩溃，最后发现「求助也是一种勇气」。跟害羞最贴近。', url: 'https://www.bilibili.com/video/BV1E34y147rC', tone: 'blue' },
+        { title: '魔术师和兔子', time: '5 分钟', tag: '奥斯卡提名', why: '小兔子鼓起勇气表达需求，最后站上舞台拿到掌声——跟「上台发言」的场景很接近。', url: 'https://www.bilibili.com/video/BV1uC4y187bB', tone: 'amber' }
+      ]
+    },
+    {
+      group: '自己来 · 独立',
+      note: '唱的、看的都有。儿歌最直白，短片适合陪着看。',
+      items: [
+        { title: '自己的事情自己做', time: '约 3 分钟', tag: '宝宝巴士儿歌', why: '歌词直接唱到「会穿衣、会吃饭、自己一个人睡觉」，最直白对应「自己吃饭」。', url: 'https://bilibili.com/video/BV1jx411M7mL/', tone: 'green' },
+        { title: '月神', time: '7 分钟', tag: '皮克斯 · 奥斯卡提名', why: '小男孩学会独立思考和尝试，画面很美，3–6 岁就能看懂。', url: 'https://www.bilibili.com/video/BV16a411q7XZ', tone: 'purple' }
+      ]
     }
   ]
 };
@@ -396,16 +432,44 @@ function renderLibrary(){
   return h;
 }
 
+function renderVideos(){
+  var groups=(SEED.videos||[]);
+  var h='<div class="view"><div class="section-title"><span>同主题好动画</span><span class="pill">现成可看</span></div>'+
+    '<div class="vid-note">这些是网上现成的短片，点开跳到 B 站。3–6 岁建议家长陪着一起看，看完正好聊聊。</div>';
+  if(!groups.length)h+='<div class="empty">还没有视频推荐。</div>';
+  for(var i=0;i<groups.length;i++){
+    var g=groups[i];
+    h+='<div class="vid-group"><div class="vid-group-head">'+esc(g.group)+'</div><p class="vid-group-note">'+esc(g.note||'')+'</p>';
+    for(var j=0;j<(g.items||[]).length;j++){
+      var it=g.items[j];
+      h+='<div class="card vid-card">'+
+        '<a href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;color:inherit">'+
+        '<div class="vid-thumb '+(it.tone||'blue')+'"><span class="vid-play"></span><span class="vid-time">'+esc(it.time)+'</span></div></a>'+
+        '<div class="vid-info"><p class="vid-title">'+esc(it.title)+'<span class="vid-tag">'+esc(it.tag||'')+'</span></p>'+
+        '<p class="vid-why">'+esc(it.why||'')+'</p>'+
+        '<div class="row" style="margin-top:9px">'+
+        '<a class="vid-open" href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer">点开看 ↗</a>'+
+        '<div class="spacer"></div>'+
+        '<button class="btn plain sm" data-act="copy-vid" data-url="'+esc(it.url)+'" type="button">复制网址</button>'+
+        '</div></div></div>';
+    }
+    h+='</div>';
+  }
+  h+='<button class="btn plain sm" data-act="go-stage" type="button" style="width:100%">回剧场看自己那集</button></div>';
+  return h;
+}
+
 function render(){
   var v=document.getElementById('view');if(!v)return;
-  v.innerHTML=S.tab==='stage'?renderStage():S.tab==='script'?renderScript():renderLibrary();
+  v.innerHTML=S.tab==='stage'?renderStage():S.tab==='script'?renderScript():S.tab==='videos'?renderVideos():renderLibrary();
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('on',tabs[i].getAttribute('data-tab')===S.tab);
   if(S.tab==='stage')paintStage();
 }
 function go(tab){
   if(S.tab==='stage'&&tab!=='stage')stopAll();
-  if(S.tab!=='stage'&&tab==='stage')S.playing=false;
+  if(S.tab!=='stage'&&tab==='stage'){S.playing=false;S.idx=0;}
+  if(tab==='videos'&&S.playing){S.playing=false;stopAll();}
   S.tab=tab;
   try{history.replaceState(null,'','#'+tab);}catch(e){}
   render();
@@ -439,6 +503,7 @@ function onClick(e){
   else if(act==='go-script')go('script');
   else if(act==='go-stage')go('stage');
   else if(act==='copy-script'){if(ep)copyText(scriptText(ep));}
+  else if(act==='copy-vid'){copyText(b.getAttribute('data-url')||'');}
   else if(act==='play-ep'){S.cur=b.getAttribute('data-id');S.idx=0;S.playing=false;stopAll();save();go('stage');}
   else if(act==='del-ep'){
     var id=b.getAttribute('data-id');
@@ -481,6 +546,7 @@ function openInfo(){
     '<p>2. 在「剧集」页点「新增一集」，把五幕台词每行一条粘进去，保存。</p>'+
     '<p>3. 回到「剧场」播放给孩子看。可以暂停、切幕、关掉朗读。</p>'+
     '<p>4. 每集固定五幕：情景重现 → 说出害怕 → 试一小步 → 小小成功 → 金句收尾。先看懂，再跟上。</p>'+
+    '<p>5.「视频」页是网上现成的同主题短片，点开跳到 B 站。手机上跳不动就用「复制网址」去浏览器打开。3–6 岁建议家长陪看。</p>'+
     '<p>数据只存在这台设备的浏览器里，不会上传。退出或清缓存前，记得在「剧本」页复制剧本留底。</p>'+
     '<div class="row" style="margin-top:14px"><button class="btn" data-act="close-info" type="button" style="flex:1">知道了</button></div></div>';
   document.body.appendChild(s);
@@ -491,12 +557,12 @@ function openInfo(){
 function init(){
   load();
   var h=(location.hash||'').replace('#','');
-  S.tab=(h==='script'||h==='library')?h:'stage';
+  S.tab=(h==='script'||h==='library'||h==='videos')?h:'stage';
   document.getElementById('tabbar').addEventListener('click',onClick);
   document.getElementById('view').addEventListener('click',onClick);
   document.getElementById('view').addEventListener('change',change);
   document.getElementById('btn-info').addEventListener('click',openInfo);
-  window.addEventListener('hashchange',function(){var x=(location.hash||'').replace('#','');if(x!==S.tab&&(x==='stage'||x==='script'||x==='library'))go(x);});
+  window.addEventListener('hashchange',function(){var x=(location.hash||'').replace('#','');if(x!==S.tab&&(x==='stage'||x==='script'||x==='library'||x==='videos'))go(x);});
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').catch(function(){});}
   render();
 }
