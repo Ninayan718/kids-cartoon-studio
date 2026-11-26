@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#E07A5F">
+<title>勇气小剧场</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="勇气小剧场">
+<style>:root{--bg:#FCF9F4;--card:#FFFFFF;--ink:#3D2B24;--muted:#8B7568;--line:#EDE2D6;--accent:#E07A5F;--accent-soft:#FCEDE6;--gold:#F2CC8F;--green:#81B29A;--shadow:0 6px 20px rgba(93,63,45,.07)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea{font-family:inherit}
+#app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;background:rgba(252,249,244,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--accent);position:relative;display:inline-block;flex:none}
+.brand-mark:before{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:#FFF6E9;left:6px;top:8px}
+.brand-mark:after{content:"";position:absolute;width:7px;height:7px;background:var(--gold);right:5px;top:5px;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.brand h1{font-size:16px;font-weight:600;margin:0;letter-spacing:.5px}
+.brand p{font-size:11px;color:var(--muted);margin:2px 0 0}
+.icon-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:14px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.view{padding:16px 14px 8px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.center{text-anchor:middle}
+
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:520px;display:flex;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:30}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;cursor:pointer}
+.tab.on{color:var(--accent);font-weight:600}
+.tab-ico{width:20px;height:20px;display:inline-block;background:currentColor;opacity:.75}
+.tab-ico[data-ico=play]{clip-path:polygon(20% 8%,20% 92%,88% 50%)}
+.tab-ico[data-ico=book]{clip-path:polygon(0 12%,42% 6%,50% 12%,58% 6%,100% 12%,100% 94%,58% 88%,50% 94%,42% 88%,0 94%)}
+.tab-ico[data-ico=grid]{width:8px;height:8px;margin:6px 0 0 6px;background:currentColor;clip-path:none;box-shadow:12px 0 0 currentColor,0 12px 0 currentColor,12px 12px 0 currentColor}
+
+.section-title{font-size:13px;color:var(--muted);margin:18px 2px 9px;display:flex;justify-content:space-between;align-items:center}
+.pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.btn{border:0;border-radius:12px;padding:11px 15px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+.btn.plain{background:#F6F0E9;color:var(--ink)}
+.btn.sm{padding:7px 11px;font-size:12px;border-radius:9px}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;align-items:center}
+.spacer{flex:1}
+
+.stage-card{padding:10px}
+.stage{position:relative;width:100%;aspect-ratio:3/2;background:#F3E7D6;border-radius:12px;overflow:hidden}
+.stage svg{display:block;width:100%;height:100%}
+.scene-tag{position:absolute;left:10px;top:10px;background:rgba(255,255,255,.86);border-radius:999px;padding:4px 10px;font-size:11px;color:var(--ink);font-weight:600}
+.bubble{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.95);border-radius:12px;padding:10px 13px;font-size:14px;line-height:1.5;box-shadow:0 3px 12px rgba(80,50,30,.12);min-height:46px;display:flex;align-items:center}
+.bubble .who{color:var(--accent);font-weight:600;margin-right:6px;flex:none}
+.dots{display:flex;gap:6px;justify-content:center;margin:11px 0 4px}
+.dot{width:7px;height:7px;border-radius:50%;background:#E4D8CB;transition:background .2s,transform .2s}
+.dot.on{background:var(--accent);transform:scale(1.35)}
+.controls{display:flex;gap:8px;align-items:center;justify-content:center;padding:6px 0 2px;flex-wrap:wrap}
+.tts-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.tts-toggle input{accent-color:var(--accent);width:15px;height:15px}
+
+.actor .bob{animation:bob 2.4s ease-in-out infinite;transform-origin:center bottom}
+.actor .eyes{animation:blink 4.6s infinite;transform-box:fill-box;transform-origin:center center}
+.sparkle{animation:twinkle 1.6s ease-in-out infinite}
+.sparkle:nth-child(even){animation-delay:.7s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
+
+.advice{padding:13px 14px;margin:0 0 12px}
+.advice h3{font-size:13px;margin:0 0 7px;color:var(--accent)}
+.advice p{font-size:13px;line-height:1.7;margin:0;color:#5A473D}
+.scene-row{padding:12px 14px;margin-bottom:9px}
+.scene-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.scene-num{width:21px;height:21px;border-radius:7px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.scene-label{font-size:12px;color:var(--muted);font-weight:600}
+.scene-text{font-size:14px;line-height:1.65;margin:0}
+.scene-note{font-size:12px;color:var(--muted);line-height:1.6;margin:6px 0 0;border-left:2px solid var(--gold);padding-left:9px}
+.takeaway{padding:14px;margin-top:12px;background:#FFF6E9;border:1px solid var(--gold);border-radius:16px;text-align:center;font-size:15px;font-weight:600;line-height:1.6}
+
+.episode{padding:13px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.ep-badge{width:42px;height:42px;border-radius:13px;background:var(--accent-soft);flex:none;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:var(--accent)}
+.ep-body{flex:1;min-width:0}
+.ep-title{font-size:14px;font-weight:600;margin:0 0 4px}
+.ep-sum{font-size:12px;color:var(--muted);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del{border:0;background:transparent;color:#C9B8AA;font-size:18px;cursor:pointer;padding:2px 5px}
+
+.form-card{padding:14px;margin-top:10px}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;background:#fff;color:var(--ink);outline:none;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{line-height:1.6}
+
+.sheet{position:fixed;inset:0;background:rgba(45,30,22,.35);display:none;align-items:flex-end;z-index:50}
+.sheet.on{display:flex}
+.sheet-inner{width:100%;max-width:520px;margin:0 auto;background:#fff;border-radius:20px 20px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));max-height:82vh;overflow:auto}
+.sheet h2{font-size:16px;margin:0 0 12px}
+.sheet p{font-size:13px;line-height:1.75;color:#5A473D;margin:0 0 10px}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(12px);background:rgba(61,43,36,.92);color:#fff;padding:9px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:60;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;padding:36px 16px;color:var(--muted);font-size:13px;line-height:1.8}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>勇气小剧场</h1>
+        <p>一小步，也很棒</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="btn-info" type="button" aria-label="使用说明">?</button>
+  </header>
+  <main id="view"></main>
+  <nav class="tabbar" id="tabbar">
+    <button class="tab" data-tab="stage" type="button"><span class="tab-ico" data-ico="play"></span>剧场</button>
+    <button class="tab" data-tab="script" type="button"><span class="tab-ico" data-ico="book"></span>剧本</button>
+    <button class="tab" data-tab="library" type="button"><span class="tab-ico" data-ico="grid"></span>剧集</button>
+  </nav>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>window.SEED_KEY = 'kids-cartoon-studio-v1';
+window.CARTOON_DATA = {
+  episodes: [
+    {
+      id: 'shy-stage',
+      title: '上台发言',
+      tag: '害羞 · 勇气',
+      summary: '害怕被很多人看着的时候',
+      advice: '害羞不是缺点，是身体在提醒孩子「这里有点不确定」。别急着让他大方一点，先让他觉得「害怕可以被看见」。这一集的目标只有一句自我介绍，不要求完整演讲——目标要小到不会失败。',
+      scenes: [
+        { label:'情景重现', art:'door', boy:'shy', bear:'peek', who:'小安', text:'好多眼睛看着我……我有点怕。', note:'先重现他的感受，不评价对错。', duration:5200 },
+        { label:'说出害怕', art:'door', boy:'scared', bear:'talk', who:'勇气熊', text:'害羞不是胆小，是身体在保护你。', note:'把「胆小」换成「身体在保护你」，去掉标签。', duration:5200 },
+        { label:'试一小步', art:'mirror', boy:'practice', bear:'smile', who:'勇气熊', text:'先对着镜子，说一句：大家好，我是小安。', note:'把目标缩成一句话，在家先练一遍。', duration:5600 },
+        { label:'小小成功', art:'stage', boy:'brave', bear:'cheer', who:'旁白', text:'讲台上，小安只说了一句。下面有人点头了。', note:'不追求完美，只记录「做到了一点点」。', duration:5600 },
+        { label:'金句收尾', art:'celebrate', boy:'happy', bear:'cheer', who:'勇气熊', text:'不用一下子勇敢，试一小步就很棒。', note:'固定收尾句，给孩子稳定的安全感。', duration:6000 }
+      ],
+      takeaway: '不用一下子勇敢，试一小步就很棒。'
+    },
+    {
+      id: 'self-eat',
+      title: '自己吃饭',
+      tag: '规矩 · 独立',
+      summary: '勺子递过去，他却摇头的时候',
+      advice: '3–6 岁正在练「我能自己做」。被追着喂，容易把吃饭变成拉锯战。把目标降到「第一口自己来」，其余仍然由大人帮，孩子才不会觉得自己被丢下。',
+      scenes: [
+        { label:'情景重现', art:'table', boy:'shy', bear:'peek', who:'小安', text:'勺子递过来了……我想让你喂。', note:'承认「自己吃确实麻烦」，不指责。', duration:5200 },
+        { label:'说出害怕', art:'table', boy:'scared', bear:'talk', who:'勇气熊', text:'自己吃是有点难，这很正常。', note:'正常化困难，减少羞耻感。', duration:5200 },
+        { label:'试一小步', art:'table', boy:'eat', bear:'smile', who:'勇气熊', text:'就吃第一口，剩下的我帮你。', note:'只要求一口，并把「我帮你」留在后面。', duration:5600 },
+        { label:'小小成功', art:'table', boy:'happy', bear:'cheer', who:'旁白', text:'哇，第一口好香！小安又舀了一口。', note:'让「香」成为动力，而不是空泛的表扬。', duration:5600 },
+        { label:'金句收尾', art:'celebrate', boy:'happy', bear:'cheer', who:'勇气熊', text:'会吃一口，就是长大一点点。', note:'同一收尾句式，和上一集互相呼应。', duration:6000 }
+      ],
+      takeaway: '会吃一口，就是长大一点点。'
+    }
+  ]
+};
+</script>
+<script>(function(){
+'use strict';
+var KEY=window.SEED_KEY||'kids-cartoon-studio-v1';
+var SEED=window.CARTOON_DATA||{episodes:[]};
+var LABELS=['情景重现','说出害怕','试一小步','小小成功','金句收尾'];
+var ARTS=['door','mirror','stage','table','celebrate'];
+var WHOS=['小安','勇气熊','勇气熊','旁白','勇气熊'];
+var S={episodes:[],cur:'',idx:0,playing:false,timer:null,tab:'stage',narrate:true,showForm:false};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function f(n){return Math.round(n*10)/10;}
+function toast(msg){var t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on');},1800);}
+
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw){var o=JSON.parse(raw);if(o&&Array.isArray(o.episodes)){S.episodes=o.episodes;S.narrate=o.narrate!==false;S.cur=o.cur&&epById(o.cur)?o.cur:(S.episodes[0]||{}).id||'';return;}}
+  }catch(e){}
+  S.episodes=JSON.parse(JSON.stringify(SEED.episodes||[]));
+  S.narrate=true;S.cur=(S.episodes[0]||{}).id||'';save();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({episodes:S.episodes,narrate:S.narrate,cur:S.cur}));}catch(e){toast('本地保存失败，记录不会保留');}}
+function epById(id){for(var i=0;i<S.episodes.length;i++)if(S.episodes[i].id===id)return S.episodes[i];return null;}
+function curEp(){return epById(S.cur)||S.episodes[0]||null;}
+
+function star(cx,cy,r,cls){
+  var pts=[];
+  for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5;var rr=(i%2)?r*0.44:r;pts.push(f(cx+Math.cos(a)*rr)+','+f(cy+Math.sin(a)*rr));}
+  return '<polygon class="'+(cls||'')+'" points="'+pts.join(' ')+'" fill="#F2CC8F"/>';
+}
+
+var BACKDROPS={
+  door:function(){return ''+
+    '<rect width="360" height="240" fill="#F3E7D6"/>'+
+    '<rect y="184" width="360" height="56" fill="#E7D3BB"/>'+
+    '<rect x="14" y="28" width="106" height="156" rx="5" fill="#BD7F59"/>'+
+    '<rect x="22" y="36" width="90" height="140" rx="3" fill="#DCA77E"/>'+
+    '<circle cx="103" cy="112" r="4" fill="#8A5A3C"/>'+
+    '<rect x="138" y="40" width="88" height="62" rx="4" fill="#B9D7D0" stroke="#FFFFFF" stroke-width="5"/>'+
+    '<path d="M182 40 L182 102 M138 71 L226 71" stroke="#FFFFFF" stroke-width="5"/>'+
+    '<rect x="246" y="46" width="98" height="50" rx="4" fill="#5C6B63"/>'+
+    '<text x="295" y="77" text-anchor="middle" fill="#F3E7D6" font-size="14" font-family="sans-serif" letter-spacing="1">今天我发言</text>';},
+  mirror:function(){return ''+
+    '<rect width="360" height="240" fill="#F7EDE0"/>'+
+    '<rect y="190" width="360" height="50" fill="#EBDAC6"/>'+
+    '<ellipse cx="180" cy="216" rx="96" ry="10" fill="#E3CDB3"/>'+
+    '<rect x="102" y="22" width="156" height="168" rx="12" fill="#D9A66F"/>'+
+    '<rect x="110" y="30" width="140" height="152" rx="7" fill="#EAF4F2"/>'+
+    '<path d="M118 168 L150 44 L172 44 L140 168Z" fill="#FFFFFF" opacity=".35"/>';},
+  stage:function(){return ''+
+    '<rect width="360" height="240" fill="#FBEEDD"/>'+
+    '<rect x="0" y="0" width="54" height="240" fill="#C9584A"/>'+
+    '<rect x="306" y="0" width="54" height="240" fill="#C9584A"/>'+
+    '<path d="M0 0 Q27 34 54 0 L54 62 Q27 96 0 62Z" fill="#B04A3E"/>'+
+    '<path d="M306 0 Q333 34 360 0 L360 62 Q333 96 306 62Z" fill="#B04A3E"/>'+
+    '<rect y="188" width="360" height="52" fill="#DDB48C"/>'+
+    '<rect x="148" y="120" width="64" height="72" rx="4" fill="#B87A4E"/>'+
+    '<rect x="142" y="114" width="76" height="10" rx="4" fill="#CE9062"/>'+
+    '<g fill="#8A6A55" opacity=".5"><circle cx="72" cy="220" r="11"/><ellipse cx="72" cy="244" rx="16" ry="12"/><circle cx="112" cy="224" r="10"/><ellipse cx="112" cy="246" rx="15" ry="11"/><circle cx="258" cy="224" r="10"/><ellipse cx="258" cy="246" rx="15" ry="11"/><circle cx="298" cy="220" r="11"/><ellipse cx="298" cy="244" rx="16" ry="12"/></g>';},
+  table:function(){return ''+
+    '<rect width="360" height="240" fill="#FBF0E2"/>'+
+    '<rect y="176" width="360" height="64" fill="#EFDCC6"/>'+
+    '<rect x="18" y="148" width="324" height="26" rx="9" fill="#D8A978"/>'+
+    '<ellipse cx="126" cy="148" rx="36" ry="11" fill="#FFFFFF"/>'+
+    '<ellipse cx="126" cy="144" rx="29" ry="7" fill="#F2CC8F"/>'+
+    '<rect x="224" y="112" width="6" height="38" rx="3" fill="#B8BDC2" transform="rotate(16 227 131)"/>';}
+};
+BACKDROPS.celebrate=function(){return ''+
+  '<rect width="360" height="240" fill="#FFF3E2"/>'+
+  '<circle cx="180" cy="116" r="76" fill="#FCE3BE"/>'+
+  '<rect y="198" width="360" height="42" fill="#F6DFC7"/>'+
+  star(52,44,10,'sparkle')+star(310,58,12,'sparkle')+star(88,96,7,'sparkle')+star(278,110,8,'sparkle')+star(180,26,8,'sparkle')+star(38,150,6,'sparkle')+star(330,158,7,'sparkle');};
+
+function boySVG(pose,x,y,s){
+  s=s||1;
+  var openEye='<ellipse cx="-10" cy="9" rx="4.3" ry="5.3" fill="#3D2B24"/><ellipse cx="10" cy="9" rx="4.3" ry="5.3" fill="#3D2B24"/>';
+  var bigEye='<ellipse cx="-10" cy="9" rx="5.4" ry="6.6" fill="#3D2B24"/><ellipse cx="10" cy="9" rx="5.4" ry="6.6" fill="#3D2B24"/>';
+  var shutEye='<path d="M-14 10 Q-10 5 -6 10" stroke="#3D2B24" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M6 10 Q10 5 14 10" stroke="#3D2B24" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+  var smile='<path d="M-10 19 Q0 29 10 19" stroke="#3D2B24" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  var small='<path d="M-6 22 Q0 18 6 22" stroke="#3D2B24" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  var open='<ellipse cx="0" cy="21" rx="6" ry="5" fill="#C85C4A"/>';
+  var eyes=openEye,mouth=smile,arms='',extra='',tilt='';
+  var armNormal='<path d="M-19 46 Q-33 58 -27 74" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M19 46 Q33 58 27 74" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/>';
+  var armUp='<path d="M-19 46 Q-36 30 -32 12" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M19 46 Q36 30 32 12" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/>';
+  var armWave='<path d="M-19 46 Q-33 58 -27 74" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M19 46 Q38 36 34 14" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/>';
+  var armHold='<path d="M-19 46 Q-33 58 -27 74" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M19 46 Q34 52 28 68" stroke="#F2B45C" stroke-width="10" fill="none" stroke-linecap="round"/>';
+  if(pose==='shy'){eyes=openEye;mouth=small;arms=armNormal;tilt='rotate(-7 0 8)';}
+  else if(pose==='scared'){eyes=bigEye;mouth='<ellipse cx="0" cy="21" rx="4" ry="5" fill="#C85C4A"/>';arms=armNormal;}
+  else if(pose==='practice'){eyes=shutEye;mouth=open;arms=armWave;}
+  else if(pose==='brave'){eyes=openEye;mouth=smile;arms=armWave;}
+  else if(pose==='eat'){eyes=shutEye;mouth=open;arms=armHold;extra='<rect x="28" y="56" width="5" height="26" rx="2.5" fill="#B8BDC2" transform="rotate(20 30 69)"/><ellipse cx="23" cy="62" rx="7" ry="4" fill="#F2CC8F"/>';}
+  else{eyes=shutEye;mouth=smile;arms=armUp;}
+  return '<g class="actor boy" transform="translate('+f(x)+' '+f(y)+') scale('+s+')"><g class="bob">'+
+    '<ellipse cx="0" cy="98" rx="30" ry="6" fill="rgba(90,60,40,.10)"/>'+
+    '<rect x="-17" y="32" width="34" height="48" rx="13" fill="#F2B45C"/>'+
+    '<path d="M-11 32 Q0 42 11 32" stroke="#E3A34A" stroke-width="2" fill="none"/>'+
+    arms+
+    '<rect x="-12" y="78" width="10" height="17" rx="5" fill="#4C6FA8"/><rect x="2" y="78" width="10" height="17" rx="5" fill="#4C6FA8"/>'+
+    '<g transform="'+tilt+'">'+
+    '<circle cx="0" cy="8" r="29" fill="#FFE0C2"/>'+
+    '<path d="M-29 3 Q-25 -28 0 -28 Q25 -28 29 3 Q14 -11 0 -11 Q-14 -11 -29 3Z" fill="#4A352B"/>'+
+    '<g class="eyes">'+eyes+'</g>'+
+    '<circle cx="-19" cy="19" r="5" fill="#F4A8A0" opacity=".5"/><circle cx="19" cy="19" r="5" fill="#F4A8A0" opacity=".5"/>'+
+    mouth+'</g>'+extra+'</g></g>';
+}
+
+function bearSVG(pose,x,y,s){
+  s=s||1;
+  var eyes='<ellipse cx="-10" cy="-3" rx="3.2" ry="3.8" fill="#3D2B24"/><ellipse cx="10" cy="-3" rx="3.2" ry="3.8" fill="#3D2B24"/>';
+  var mouth='<path d="M-6 10 Q0 16 6 10" stroke="#5A3E2B" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  var arms='<path d="M-20 44 Q-34 56 -28 72" stroke="#B07A55" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M20 44 Q34 56 28 72" stroke="#B07A55" stroke-width="9" fill="none" stroke-linecap="round"/>';
+  if(pose==='talk'){mouth='<ellipse cx="0" cy="11" rx="5" ry="4" fill="#7A4A3A"/>';}
+  else if(pose==='cheer'){arms='<path d="M-20 44 Q-38 28 -34 10" stroke="#B07A55" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M20 44 Q38 28 34 10" stroke="#B07A55" stroke-width="9" fill="none" stroke-linecap="round"/>';}
+  else if(pose==='smile'){eyes='<path d="M-14 -3 Q-10 -8 -6 -3" stroke="#3D2B24" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 -3 Q10 -8 14 -3" stroke="#3D2B24" stroke-width="2" fill="none" stroke-linecap="round"/>';}
+  return '<g class="actor bear" transform="translate('+f(x)+' '+f(y)+') scale('+s+')"><g class="bob">'+
+    '<ellipse cx="0" cy="80" rx="26" ry="6" fill="rgba(90,60,40,.10)"/>'+
+    '<rect x="-20" y="30" width="40" height="48" rx="14" fill="#B07A55"/>'+
+    '<ellipse cx="0" cy="52" rx="13" ry="15" fill="#E8CDB4"/>'+
+    arms+
+    '<circle cx="-19" cy="-17" r="10" fill="#B07A55"/><circle cx="19" cy="-17" r="10" fill="#B07A55"/>'+
+    '<circle cx="-19" cy="-17" r="5" fill="#E8CDB4"/><circle cx="19" cy="-17" r="5" fill="#E8CDB4"/>'+
+    '<circle cx="0" cy="0" r="26" fill="#B07A55"/>'+
+    '<ellipse cx="0" cy="9" rx="14" ry="10" fill="#F3DECB"/>'+
+    '<ellipse cx="0" cy="4" rx="5" ry="3.5" fill="#5A3E2B"/>'+
+    '<g class="eyes">'+eyes+'</g>'+mouth+'</g></g>';
+}
+
+function sceneSVG(sc){
+  var art=BACKDROPS[sc.art]?sc.art:'door';
+  var body=BACKDROPS[art]();
+  var bp={door:[300,148,.82],mirror:[258,150,.82],stage:[284,152,.76],table:[288,140,.82],celebrate:[258,146,.86]}[art];
+  var yp={door:[156,142,.92],mirror:[180,136,.88],stage:[180,118,.84],table:[120,104,.92],celebrate:[176,132,.98]}[art];
+  if(art==='door'&&sc.boy==='shy')yp=[104,144,.82];
+  body+=bearSVG(sc.bear||'smile',bp[0],bp[1],bp[2]);
+  body+=boySVG(sc.boy||'happy',yp[0],yp[1],yp[2]);
+  return '<svg viewBox="0 0 360 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="动画场景">'+body+'</svg>';
+}
+
+function speak(sc){
+  if(!S.narrate||!('speechSynthesis' in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(sc.text);u.lang='zh-CN';u.rate=.88;u.pitch=1.15;
+    var vs=window.speechSynthesis.getVoices()||[];
+    for(var i=0;i<vs.length;i++){if(/zh[-_]?CN|chinese/i.test((vs[i].lang||'')+' '+(vs[i].name||''))){u.voice=vs[i];break;}}
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function stopAll(){clearTimeout(S.timer);S.timer=null;try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}}
+function arm(){clearTimeout(S.timer);if(!S.playing||S.tab!=='stage')return;var ep=curEp();if(!ep)return;var d=(ep.scenes[S.idx]&&ep.scenes[S.idx].duration)||5200;S.timer=setTimeout(function(){showScene(S.idx+1);},d);}
+function showScene(i){
+  var ep=curEp();if(!ep||!ep.scenes.length)return;
+  S.idx=((i%ep.scenes.length)+ep.scenes.length)%ep.scenes.length;
+  var sc=ep.scenes[S.idx];
+  paintStage();
+  speak(sc);
+  arm();
+}
+function paintStage(){
+  var ep=curEp();if(!ep||S.tab!=='stage')return;
+  var sc=ep.scenes[S.idx]||{};
+  var box=document.getElementById('stageBox');
+  if(box)box.innerHTML=sceneSVG(sc)+'<span class="scene-tag">第 '+(S.idx+1)+' / '+ep.scenes.length+' 幕 · '+esc(sc.label)+'</span>'+
+    '<div class="bubble"><span class="who">'+esc(sc.who||'旁白')+'</span><span>'+esc(sc.text)+'</span></div>';
+  var dots=document.getElementById('dots');
+  if(dots){var h='';for(var i=0;i<ep.scenes.length;i++)h+='<span class="dot'+(i===S.idx?' on':'')+'"></span>';dots.innerHTML=h;}
+  var btn=document.getElementById('toggleBtn');if(btn)btn.textContent=S.playing?'暂停':'播放';
+}
+
+function renderStage(){
+  var ep=curEp();
+  if(!ep)return '<div class="view"><div class="empty">还没有剧集。<br>去「剧集」页添加一集吧。</div></div>';
+  var sc=ep.scenes[S.idx]||{};
+  return '<div class="view">'+
+    '<div class="section-title"><span>正在播放</span><span class="pill">'+esc(ep.tag||'自定义')+'</span></div>'+
+    '<div class="card stage-card">'+
+      '<div class="stage" id="stageBox">'+sceneSVG(sc)+
+        '<span class="scene-tag">第 '+(S.idx+1)+' / '+ep.scenes.length+' 幕 · '+esc(sc.label)+'</span>'+
+        '<div class="bubble"><span class="who">'+esc(sc.who||'旁白')+'</span><span>'+esc(sc.text)+'</span></div>'+
+      '</div>'+
+      '<div class="dots" id="dots"></div>'+
+      '<div class="controls">'+
+        '<button class="btn sm plain" data-act="prev" type="button">上一幕</button>'+
+        '<button class="btn sm" data-act="toggle" id="toggleBtn" type="button">'+(S.playing?'暂停':'播放')+'</button>'+
+        '<button class="btn sm plain" data-act="next" type="button">下一幕</button>'+
+        '<label class="tts-toggle"><input type="checkbox" id="ttsBox" '+(S.narrate?'checked':'')+'>朗读</label>'+
+      '</div>'+
+    '</div>'+
+    '<div class="section-title">这一集在讲什么</div>'+
+    '<div class="card advice"><h3>给妈妈的话</h3><p>'+esc(ep.advice||'')+'</p></div>'+
+    '<div class="row" style="margin:12px 2px 0"><button class="btn ghost sm" data-act="go-script" type="button">看完整剧本</button><div class="spacer"></div><button class="btn plain sm" data-act="replay" type="button">从头再播</button></div>'+
+  '</div>';
+}
+
+function renderScript(){
+  var ep=curEp();
+  if(!ep)return '<div class="view"><div class="empty">还没有剧本。</div></div>';
+  var h='<div class="view"><div class="section-title"><span>《'+esc(ep.title)+'》剧本</span><span class="pill">'+esc(ep.tag||'自定义')+'</span></div>'+
+    '<div class="card advice"><h3>给妈妈的话</h3><p>'+esc(ep.advice||'')+'</p></div>'+
+    '<div class="section-title">五幕分镜</div>';
+  for(var i=0;i<ep.scenes.length;i++){
+    var sc=ep.scenes[i];
+    h+='<div class="card scene-row"><div class="scene-head"><span class="scene-num">'+(i+1)+'</span><span class="scene-label">'+esc(sc.label||LABELS[i]||'第'+(i+1)+'幕')+'</span><span class="spacer"></span><span class="small muted">'+esc(sc.who||'旁白')+'</span></div>'+
+      '<p class="scene-text">'+esc(sc.text)+'</p>'+
+      (sc.note?'<p class="scene-note">'+esc(sc.note)+'</p>':'')+'</div>';
+  }
+  h+='<div class="takeaway">'+esc(ep.takeaway||'')+'</div>'+
+    '<div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="copy-script" type="button">复制剧本</button><div class="spacer"></div><button class="btn sm" data-act="go-stage" type="button">去播放</button></div></div>';
+  return h;
+}
+
+function renderLibrary(){
+  var h='<div class="view"><div class="section-title"><span>剧集库</span><span class="small muted">共 '+S.episodes.length+' 集</span></div>';
+  if(!S.episodes.length)h+='<div class="empty">剧集库是空的。<br>点下面「新增一集」开始。</div>';
+  for(var i=0;i<S.episodes.length;i++){
+    var e=S.episodes[i];
+    h+='<div class="card episode"><div class="ep-badge">'+(i+1)+'</div><div class="ep-body"><p class="ep-title">'+esc(e.title)+'</p><p class="ep-sum">'+esc(e.summary||'')+'</p></div>'+
+      '<button class="btn sm" data-act="play-ep" data-id="'+esc(e.id)+'" type="button">播放</button>'+
+      '<button class="del" data-act="del-ep" data-id="'+esc(e.id)+'" type="button" aria-label="删除">×</button></div>';
+  }
+  h+='<button class="btn ghost" data-act="toggle-form" type="button" style="width:100%;margin-top:6px">'+(S.showForm?'收起表单':'新增一集')+'</button>';
+  if(S.showForm){
+    h+='<div class="card form-card">'+
+      '<div class="field"><label>剧集标题</label><input id="f-title" placeholder="例如：排队等待"></div>'+
+      '<div class="field"><label>标签</label><input id="f-tag" placeholder="例如：耐心 · 等待"></div>'+
+      '<div class="field"><label>一句话场景</label><input id="f-sum" placeholder="例如：排了好久，他不想等了"></div>'+
+      '<div class="field"><label>五幕台词（每行一幕，共 5 行）</label><textarea id="f-lines" rows="6" placeholder="第一幕台词&#10;第二幕台词&#10;第三幕台词&#10;第四幕台词&#10;第五幕台词"></textarea></div>'+
+      '<div class="field"><label>结尾金句</label><input id="f-take" placeholder="例如：等一等，也是在练习"></div>'+
+      '<div class="field"><label>给妈妈的话</label><textarea id="f-advice" rows="3" placeholder="这一集背后的引导思路"></textarea></div>'+
+      '<button class="btn" data-act="add-ep" type="button" style="width:100%">保存并加入剧集库</button>'+
+      '</div>';
+  }
+  h+='<button class="btn plain sm" data-act="restore" type="button" style="width:100%;margin-top:10px">恢复内置两集</button></div>';
+  return h;
+}
+
+function render(){
+  var v=document.getElementById('view');if(!v)return;
+  v.innerHTML=S.tab==='stage'?renderStage():S.tab==='script'?renderScript():renderLibrary();
+  var tabs=document.querySelectorAll('.tab');
+  for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('on',tabs[i].getAttribute('data-tab')===S.tab);
+  if(S.tab==='stage')paintStage();
+}
+function go(tab){
+  if(S.tab==='stage'&&tab!=='stage')stopAll();
+  if(S.tab!=='stage'&&tab==='stage')S.playing=false;
+  S.tab=tab;
+  try{history.replaceState(null,'','#'+tab);}catch(e){}
+  render();
+}
+
+function scriptText(ep){
+  var h='《'+ep.title+'》\n给妈妈的话：'+(ep.advice||'')+'\n\n';
+  for(var i=0;i<ep.scenes.length;i++){var sc=ep.scenes[i];h+=(i+1)+'. '+sc.label+'｜'+sc.who+'：'+sc.text+'\n'+(sc.note?'   说明：'+sc.note+'\n':'');}
+  return h+'\n金句：'+(ep.takeaway||'');
+}
+function copyText(txt){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast('已复制');},function(){fallbackCopy(txt);});}
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){
+  var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('已复制');}catch(e){toast('复制失败，请手动选择');}
+  document.body.removeChild(ta);
+}
+
+function onClick(e){
+  var tab=e.target.closest?e.target.closest('.tab'):null;
+  if(tab){go(tab.getAttribute('data-tab'));return;}
+  var b=e.target.closest?e.target.closest('[data-act]'):null;
+  if(!b)return;
+  var act=b.getAttribute('data-act'),ep=curEp();
+  if(act==='prev'){S.playing=false;showScene(S.idx-1);S.playing=false;paintStage();}
+  else if(act==='next'){S.playing=false;showScene(S.idx+1);S.playing=false;paintStage();}
+  else if(act==='toggle'){S.playing=!S.playing;if(S.playing){speak((ep||{}).scenes&&ep.scenes[S.idx]);arm();}else stopAll();paintStage();}
+  else if(act==='replay'){S.idx=0;S.playing=true;showScene(0);}
+  else if(act==='go-script')go('script');
+  else if(act==='go-stage')go('stage');
+  else if(act==='copy-script'){if(ep)copyText(scriptText(ep));}
+  else if(act==='play-ep'){S.cur=b.getAttribute('data-id');S.idx=0;S.playing=false;stopAll();save();go('stage');}
+  else if(act==='del-ep'){
+    var id=b.getAttribute('data-id');
+    if(!window.confirm('确定删除这一集吗？'))return;
+    S.episodes=S.episodes.filter(function(x){return x.id!==id;});
+    if(S.cur===id)S.cur=(S.episodes[0]||{}).id||'';S.idx=0;stopAll();save();render();toast('已删除');
+  }
+  else if(act==='toggle-form'){S.showForm=!S.showForm;render();}
+  else if(act==='add-ep'){addEpisode();}
+  else if(act==='restore'){
+    if(!window.confirm('恢复内置两集会保留你新增的剧集，确定吗？'))return;
+    var ids={};S.episodes.forEach(function(x){ids[x.id]=1;});
+    (SEED.episodes||[]).forEach(function(x){if(!ids[x.id])S.episodes.push(JSON.parse(JSON.stringify(x)));});
+    save();render();toast('已恢复内置剧集');
+  }
+}
+function addEpisode(){
+  function val(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+  var title=val('f-title');
+  var raw=val('f-lines');
+  var lines=raw.split(/\n+/).filter(function(x){return x.trim();});
+  if(!title){toast('请填剧集标题');return;}
+  if(lines.length<5){toast('请写满 5 行台词');return;}
+  var scenes=[];
+  for(var i=0;i<5;i++){
+    scenes.push({label:LABELS[i],art:ARTS[i],boy:i===0?'shy':i===4?'happy':i===3?'brave':'practice',bear:i===0?'peek':i===1?'talk':'cheer',who:WHOS[i],text:lines[i],note:'',duration:5400});
+  }
+  var ep={id:'ep-'+Date.now().toString(36),title:title,tag:val('f-tag')||'自定义',summary:val('f-sum')||'自己新增的一集',advice:val('f-advice')||'这一集的重点是先接住情绪，再给一个小到不会失败的动作。',scenes:scenes,takeaway:val('f-take')||'试一小步，就很棒。'};
+  S.episodes.push(ep);S.cur=ep.id;S.idx=0;S.showForm=false;save();render();toast('已加入剧集库');
+}
+
+function change(e){
+  if(e.target&&e.target.id==='ttsBox'){S.narrate=e.target.checked;save();if(!S.narrate)stopAll();else speak((curEp()||{}).scenes&&curEp().scenes[S.idx]);}
+}
+function openInfo(){
+  var s=document.getElementById('infoSheet');if(s){s.classList.add('on');return;}
+  s=document.createElement('div');s.className='sheet';s.id='infoSheet';
+  s.innerHTML='<div class="sheet-inner"><h2>怎么用</h2>'+
+    '<p>1. 把孩子的问题发给小言，拿到「解决方案 + 五幕剧本」。</p>'+
+    '<p>2. 在「剧集」页点「新增一集」，把五幕台词每行一条粘进去，保存。</p>'+
+    '<p>3. 回到「剧场」播放给孩子看。可以暂停、切幕、关掉朗读。</p>'+
+    '<p>4. 每集固定五幕：情景重现 → 说出害怕 → 试一小步 → 小小成功 → 金句收尾。先看懂，再跟上。</p>'+
+    '<p>数据只存在这台设备的浏览器里，不会上传。退出或清缓存前，记得在「剧本」页复制剧本留底。</p>'+
+    '<div class="row" style="margin-top:14px"><button class="btn" data-act="close-info" type="button" style="flex:1">知道了</button></div></div>';
+  document.body.appendChild(s);
+  s.addEventListener('click',function(e){if(e.target===s||(e.target.getAttribute&&e.target.getAttribute('data-act')==='close-info'))s.classList.remove('on');});
+  s.classList.add('on');
+}
+
+function init(){
+  load();
+  var h=(location.hash||'').replace('#','');
+  S.tab=(h==='script'||h==='library')?h:'stage';
+  document.getElementById('tabbar').addEventListener('click',onClick);
+  document.getElementById('view').addEventListener('click',onClick);
+  document.getElementById('view').addEventListener('change',change);
+  document.getElementById('btn-info').addEventListener('click',openInfo);
+  window.addEventListener('hashchange',function(){var x=(location.hash||'').replace('#','');if(x!==S.tab&&(x==='stage'||x==='script'||x==='library'))go(x);});
+  if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+  render();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</body>
+</html>
