@@ -1,0 +1,21 @@
+{
+  "name": "勇气小剧场",
+  "short_name": "勇气小剧场",
+  "description": "把孩子的问题变成五幕鼓励动画",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FCF9F4",
+  "theme_color": "#E07A5F",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
